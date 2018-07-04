@@ -1,8 +1,7 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+app_lock_test:
+    path: /lock/test
+    controller: App\Controller\LockController::test
 
-
-app_test_number:
-    path: /test/number
-    controller: App\Controller\TestController::number
+app_lock:
+    path: /lock
+    controller: App\Controller\LockController::lock
