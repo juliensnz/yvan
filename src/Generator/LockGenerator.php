@@ -2,6 +2,8 @@
 
 namespace App\Generator;
 
+use App\Service\ChangeDirectory;
+
 class LockGenerator {
 
     public function generate(string $type, string $repository){
@@ -10,20 +12,19 @@ class LockGenerator {
 
         //$clone = shell_exec("cd ../workdir && " . sprintf('git clone git@github.com:%s.git', $repository));
 
-
         //display folder test
         $directory = shell_exec("cd ../workdir/" . $repositoryName[1] . "&& ls"); echo $directory;
 
 
         if ($type == "all") {
 
-            $installComposer = shell_exec("cd ../workdir/" . $repositoryName[1] . " && composer install");
+            $installComposer = shell_exec("cd ../workdir/" . $repositoryName[1] . " && composer install  --no-scripts --no-autoloader --no-progress --no-suggest --ignore-platform-reqs");
             $installYarn = shell_exec("cd ../workdir/" . $repositoryName[1] . " && yarn install");
 
             $copyComposer = shell_exec("cd ../workdir/" . $repositoryName[1] . " && cp yarn.lock ../../public/" . $repository);
             $copyYarn = shell_exec("cd ../workdir/" . $repositoryName[1] . " && cp composer.lock ../../public/" . $repository);
         }
-        
+
         else {
             //$install = shell_exec("cd ../workdir/" . $repositoryName[1] . " && " . $type . " install --no-scripts --no-autoloader --no-progress --no-suggest --ignore-platform-reqs");
 
@@ -31,6 +32,9 @@ class LockGenerator {
         }
 
 
+
+        $change_directory = new ChangeDirectory($repositoryName[1]);
+        $function_test = $change_directory->cdPimDirectory();
 
 
         //Display var

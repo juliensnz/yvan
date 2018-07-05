@@ -1,7 +1,3 @@
-app_lock_test:
-    path: /lock/test
-    controller: App\Controller\LockController::test
-
 app_lock:
     path: /lock
     controller: App\Controller\LockController::lock
