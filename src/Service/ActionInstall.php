@@ -35,6 +35,6 @@ class ActionInstall
 
             return $install;
         }
-
+        
     }
 }

@@ -31,7 +31,7 @@ class LockController
     {
         $userInput = explode(' ', $request->request->get('text'));
 
-        $type = isset($userInput[0]) && '' !== $userInput[0] ? $userInput[0] : 'all';
+        $type = isset($userInput[0]) && '' !== $userInput[0] ? $userInput[0] : 'composer';
 
         if (!in_array($type, $this->allowedTypes)) {
             throw new \InvalidArgumentException('Type not allowed');

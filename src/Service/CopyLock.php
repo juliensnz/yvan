@@ -19,13 +19,13 @@ class CopyLock
     {
         if ($this->type !== "all") {
 
-            $copy = " && cp " . $this->type . ".lock ../../public/" . $this->repository;
+            $copy = " && cp " . $this->type . ".lock ../../public/lock/" . $this->repository;
             return $copy;
         }
 
         else {
-            $copy1 = " && cp " . "composer.lock ../../public/" . $this->repository;
-            $copy2 = " && cp " . "yarn.lock ../../public/" . $this->repository;
+            $copy1 = " && cp " . "composer.lock ../../public/lock/" . $this->repository;
+            $copy2 = " && cp " . "yarn.lock ../../public/lock/" . $this->repository;
 
             $copy = $copy1 . $copy2;
 
