@@ -26,7 +26,7 @@ class LockGenerator {
 
 
 
-        
+
         //Display var
 
         $action_lock = "cp " . $type . ".lock"; $action_install = $type . " install";
