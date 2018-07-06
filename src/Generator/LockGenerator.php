@@ -3,6 +3,9 @@
 namespace App\Generator;
 
 use App\Service\ChangeDirectory;
+use App\Service\CloneDirectory;
+use App\Service\ActionInstall;
+use App\Service\CopyLock;
 
 class LockGenerator {
 
@@ -10,33 +13,20 @@ class LockGenerator {
 
         $repositoryName = explode('/', $repository);
 
-        //$clone = shell_exec("cd ../workdir && " . sprintf('git clone git@github.com:%s.git', $repository));
-
-        //display folder test
-        $directory = shell_exec("cd ../workdir/" . $repositoryName[1] . "&& ls"); echo $directory;
-
-
-        if ($type == "all") {
-
-            $installComposer = shell_exec("cd ../workdir/" . $repositoryName[1] . " && composer install  --no-scripts --no-autoloader --no-progress --no-suggest --ignore-platform-reqs");
-            $installYarn = shell_exec("cd ../workdir/" . $repositoryName[1] . " && yarn install");
-
-            $copyComposer = shell_exec("cd ../workdir/" . $repositoryName[1] . " && cp yarn.lock ../../public/" . $repository);
-            $copyYarn = shell_exec("cd ../workdir/" . $repositoryName[1] . " && cp composer.lock ../../public/" . $repository);
-        }
-
-        else {
-            //$install = shell_exec("cd ../workdir/" . $repositoryName[1] . " && " . $type . " install --no-scripts --no-autoloader --no-progress --no-suggest --ignore-platform-reqs");
-
-            //$copy = shell_exec("cd ../workdir/" . $repositoryName[1] . " && cp " . $type . ".lock ../../public/" . $repository);
-        }
-
-
-
         $change_directory = new ChangeDirectory($repositoryName[1]);
-        $function_test = $change_directory->cdPimDirectory();
+        $clone_directory = new CloneDirectory($repository);
+        $action_install = new ActionInstall($type);
+        $copy_lock = new CopyLock($type, $repository);
+
+        $shellExec = shell_exec($change_directory->cdWork()
+            . $clone_directory->clonePimDirectory()
+            . $change_directory->cdPimDirectory()
+            . $action_install->install()
+            . $copy_lock->copy());
 
 
+
+        
         //Display var
 
         $action_lock = "cp " . $type . ".lock"; $action_install = $type . " install";

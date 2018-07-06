@@ -6,7 +6,6 @@ use App\Generator\LockGenerator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @package App\Controller
@@ -32,7 +31,7 @@ class LockController
     {
         $userInput = explode(' ', $request->request->get('text'));
 
-        $type = isset($userInput[0]) && '' !== $userInput[0] ? $userInput[0] : 'composer';
+        $type = isset($userInput[0]) && '' !== $userInput[0] ? $userInput[0] : 'all';
 
         if (!in_array($type, $this->allowedTypes)) {
             throw new \InvalidArgumentException('Type not allowed');
