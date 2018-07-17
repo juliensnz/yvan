@@ -16,7 +16,6 @@ class ChangeDirectory
     public function cdWork()
     {
         $cd = "cd ../workdir && ";
-
         return $cd;
     }
 
@@ -24,7 +23,6 @@ class ChangeDirectory
     public function cdPimDirectory()
     {
         $cd = " && cd " . $this->path . " && ";
-
         return $cd;
     }
 }

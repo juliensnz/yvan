@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 class CopyLock
 {
@@ -15,22 +17,32 @@ class CopyLock
         $this->repository = $repository;
     }
 
+
+
     public function copy()
     {
+        $fileSystem = new Filesystem();
+
         if ($this->type !== "all") {
 
-            $copy = " && cp " . $this->type . ".lock ../../public/lock/" . $this->repository;
-            return $copy;
+            try {
+                $fileSystem->copy('../workdir/' . $this->repository . '/' . $this->type . '.lock', 'lock/' . $this->repository . '/' . $this->type . '.lock');
+            }
+            catch (IOExceptionInterface $exception) {
+                echo "An error occurred with the copy of the directory.";
+                return false;
+            }
         }
 
         else {
-            $copy1 = " && cp " . "composer.lock ../../public/lock/" . $this->repository;
-            $copy2 = " && cp " . "yarn.lock ../../public/lock/" . $this->repository;
-
-            $copy = $copy1 . $copy2;
-
-            return $copy;
+            try {
+                $fileSystem->copy('../workdir/' . $this->repository . '/composer.lock', 'lock/' . $this->repository . '/composer.lock');
+                $fileSystem->copy('../workdir/' . $this->repository . '/yarn.lock', 'lock/' . $this->repository . '/yarn.lock');
+            }
+            catch (IOExceptionInterface $exception) {
+                echo "An error occurred with the copy of the directories.";
+                return false;
+            }
         }
-
     }
 }

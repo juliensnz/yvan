@@ -15,7 +15,6 @@ class CloneDirectory
     public function clonePimDirectory()
     {
         $clone = sprintf('git clone git@github.com:%s.git', $this->repository);
-
         return $clone;
     }
 }
