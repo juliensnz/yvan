@@ -2,38 +2,56 @@
 
 namespace App\Generator;
 
-use App\Services\FileSystem;
-use App\Services\Git;
-use App\Services\Composer;
-use App\Services\Yarn;
+use App\Exception\ComposerException;
+use App\Service\FileSystem;
+use App\Service\Git;
+use App\Service\Composer;
+use App\Service\Yarn;
+
+use Symfony\Component\Filesystem\Filesystem as FilesystemComponent;
+
 
 class LockGenerator
 {
+    /** @var string */
+    public $installationFolder;
+
+    /** @var string */
+    public $destinationFolder;
+
     public function generate(string $type, string $repository)
     {
         $repositoryName = explode('/', $repository);
 
-        $fileSystem = new FileSystem($type, $repositoryName[1]);
-        $git = new Git($repository);
-        $composer = new Composer($repositoryName[1]);
-        $yarn = new Yarn($repositoryName[1]);
+        $fileSystemComponent = new FilesystemComponent();
 
-        $git->clone();
+        $installationFolder = sprintf('../workdir');
+        $destinationFolder = sprintf('lock/%s', $repositoryName[1]);
+
+        $fileSystem = new FileSystem($type, $fileSystemComponent);
+        $git = new Git();
+        $composer = new Composer();
+        $yarn = new Yarn();
+
+        $fileSystem->createDirectory($installationFolder);
+        $git->clone($repositoryName[1]);
 
         switch ($type) {
-            case "composer":
-                $composer->install();
+            case 'composer':
+                $composer->install($installationFolder);
                 break;
-            case "yarn":
-                $yarn->install();
+            case 'yarn':
+                $yarn->install($installationFolder);
                 break;
-            case "all":
-                $composer->install();
-                $yarn->install();
+            case 'all':
+                $composer->install($installationFolder);
+                $yarn->install($installationFolder);
                 break;
         }
 
-        $fileSystem->copyFile();
-        $fileSystem->rmDirectory();
+        $fileSystem->copyFile($installationFolder, $destinationFolder);
+        $fileSystem->removeDirectory($installationFolder);
+
+        return sprintf('The operation the %s repository is successfull', $repository);
     }
 }
