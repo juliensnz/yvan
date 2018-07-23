@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use Symfony\Component\Filesystem\Filesystem as FilesystemComponent;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use App\Exception\CopyFileException;
 
 class FileSystem
 {
@@ -30,8 +30,8 @@ class FileSystem
         try {
             $this->fileSystem->copy(sprintf('%s', $sourceFile),
                 sprintf('%s', $destinationFile));
-        } catch (FileNotFoundException $exception) {
-            throw new \Exception($exception->getMessage());
+        } catch (\Exception $exception) {
+            throw new CopyFileException();
         }
     }
 }

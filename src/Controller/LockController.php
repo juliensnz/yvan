@@ -44,6 +44,7 @@ class LockController
         }
 
         $response = $this->lockGenerator->generate($type, $repository);
+
         return new JsonResponse($response);
     }
 }

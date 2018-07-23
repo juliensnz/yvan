@@ -13,8 +13,8 @@ class Yarn
 
         try {
             ProcessRunner::runCommand($cmdInstall);
-        } catch (InstallException $exception) {
-            throw new \Exception($exception->getMessage());
+        } catch (\Exception $exception) {
+            throw new InstallException();
         }
     }
 }

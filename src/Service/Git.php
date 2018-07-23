@@ -13,8 +13,8 @@ class Git
 
         try {
             ProcessRunner::runCommand(array('git', 'clone', $repository, '../workdir'));
-        } catch (GitCloneException $exception) {
-            throw new \Exception($exception->getMessage());
+        } catch (\Exception $exception) {
+            throw new GitCloneException();
         }
     }
 }
