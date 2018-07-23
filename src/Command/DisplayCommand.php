@@ -13,6 +13,5 @@ class DisplayCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
-        $io->test('Display test');
     }
 }

@@ -2,23 +2,11 @@
 
 namespace App\Exception;
 
-use Exception;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class GitCloneException extends Exception
+/**
+ * Exception thrown when there is a problem with Git clone.
+ */
+class GitCloneException extends ProcessFailedException
 {
-    public $message;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->message = "Error with git clone";
-    }
-
-    public function __toString()
-    {
-        return $this->message;
-    }
 }
-
-//use App\Exception\GitCloneException;
-//catch (GitCloneException $e) {return new JsonResponse(['status' => 'errorException', 'message' => $e->getMessage(),]);}
