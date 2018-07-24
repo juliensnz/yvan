@@ -28,5 +28,19 @@ services:
             - '@App\Generator\LockGenerator'
         tags: ['controller.service_arguments']
 
+    App\Generator\:
+        resource: '../src/Generator'
+        arguments:
+            - '@App\Service\FileSystem'
+            - '@App\Service\Git'
+            - '@App\Service\Composer'
+            - '@App\Service\Yarn'
+        tags: ['generator.service_arguments']
+
+    App\Service\:
+        resource: '../src/Service/FileSystem.php'
+        arguments:
+            - '@Symfony\Component\Filesystem\Filesystem'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
