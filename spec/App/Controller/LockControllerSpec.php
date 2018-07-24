@@ -23,6 +23,6 @@ class LockControllerSpec extends ObjectBehavior
 
     function it_work(LockGenerator $lockGenerator)
     {
-        //$lockGenerator->generate(Argument::cetera(), Argument::cetera());
+        $lockGenerator->generate(Argument::cetera(), Argument::cetera());
     }
 }

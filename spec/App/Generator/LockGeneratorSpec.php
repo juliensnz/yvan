@@ -36,15 +36,15 @@ class LockGeneratorSpec extends ObjectBehavior
             for ($i = 0; $i <= 2; $i++) {
                 if ($type[$i] == 'composer') {
                     $composer->install(LockGenerator::WORKDIR);
-                    $fileSystem->copyFile('../workdir/composer.lock',
+                    $fileSystem->copyFile(sprintf('../workdir/%s.lock', $type[$i]),
                         sprintf('lock/%s/composer.lock', $repositoryClone[$j]))->shouldBeCalled();
                 }
-                if ($type[$i] == 'composer') {
+                if ($type[$i] == 'yarn') {
                     $yarn->install(LockGenerator::WORKDIR);
-                    $fileSystem->copyFile('../workdir/yarn.lock',
-                        sprintf('lock/%s/yarn.lock', $repositoryClone[$j]))->shouldBeCalled();
+                    $fileSystem->copyFile(sprintf('../workdir/%s.lock', $type[$i]),
+                        sprintf('lock/%s/%s.lock', $repositoryClone[$j], $type[$i]))->shouldBeCalled();
                 }
-                if ($type[$i] == 'composer') {
+                if ($type[$i] == 'all') {
                     $composer->install(LockGenerator::WORKDIR);
                     $yarn->install(LockGenerator::WORKDIR);
                     $fileSystem->copyFile('../workdir/composer.lock',
