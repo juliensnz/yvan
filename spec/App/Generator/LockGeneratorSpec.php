@@ -21,41 +21,67 @@ class LockGeneratorSpec extends ObjectBehavior
         $this->shouldHaveType(LockGenerator::class);
     }
 
-    function it_generates_lock(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
+    function it_generates_lock_composer_community_dev(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
     {
-        $repository = ['akeneo/pim-community-dev', 'akeneo/pim-enterprise-dev'];
-        $repositoryClone = ['pim-community-dev', 'pim-enterprise-dev'];
-        $type = ['composer', 'yarn', 'all'];
-
         $fileSystem->createDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $git->clone('pim-community-dev')->shouldBeCalled();
+        $composer->install(LockGenerator::WORKDIR);
+        $fileSystem->copyFile('../workdir/composer.lock', 'lock/pim-community-dev/composer.lock')->shouldBeCalled();
+        $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $this->generate('composer', 'akeneo/pim-community-dev');
+    }
 
-        for ($j = 0; $j <= 1; $j++) {
+    function it_generates_lock_yarn_community_dev(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
+    {
+        $fileSystem->createDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $git->clone('pim-community-dev')->shouldBeCalled();
+        $yarn->install(LockGenerator::WORKDIR);
+        $fileSystem->copyFile('../workdir/yarn.lock', 'lock/pim-community-dev/yarn.lock')->shouldBeCalled();
+        $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $this->generate('yarn', 'akeneo/pim-community-dev');
+    }
 
-            $git->clone($repositoryClone[$j])->shouldBeCalled();
+    function it_generates_lock_all_community_dev(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
+    {
+        $fileSystem->createDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $git->clone('pim-community-dev')->shouldBeCalled();
+        $composer->install(LockGenerator::WORKDIR);
+        $yarn->install(LockGenerator::WORKDIR);
+        $fileSystem->copyFile('../workdir/composer.lock', 'lock/pim-community-dev/composer.lock')->shouldBeCalled();
+        $fileSystem->copyFile('../workdir/yarn.lock', 'lock/pim-community-dev/yarn.lock')->shouldBeCalled();
+        $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $this->generate('all', 'akeneo/pim-community-dev');
+    }
 
-            for ($i = 0; $i <= 2; $i++) {
-                if ($type[$i] == 'composer') {
-                    $composer->install(LockGenerator::WORKDIR);
-                    $fileSystem->copyFile(sprintf('../workdir/%s.lock', $type[$i]),
-                        sprintf('lock/%s/composer.lock', $repositoryClone[$j]))->shouldBeCalled();
-                }
-                if ($type[$i] == 'yarn') {
-                    $yarn->install(LockGenerator::WORKDIR);
-                    $fileSystem->copyFile(sprintf('../workdir/%s.lock', $type[$i]),
-                        sprintf('lock/%s/%s.lock', $repositoryClone[$j], $type[$i]))->shouldBeCalled();
-                }
-                if ($type[$i] == 'all') {
-                    $composer->install(LockGenerator::WORKDIR);
-                    $yarn->install(LockGenerator::WORKDIR);
-                    $fileSystem->copyFile('../workdir/composer.lock',
-                        sprintf('lock/%s/composer.lock', $repositoryClone[$j]))->shouldBeCalled();
-                    $fileSystem->copyFile('../workdir/yarn.lock',
-                        sprintf('lock/%s/yarn.lock', $repositoryClone[$j]))->shouldBeCalled();
-                }
+    function it_generates_lock_composer_enterprise_dev(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
+    {
+        $fileSystem->createDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $git->clone('pim-enterprise-dev')->shouldBeCalled();
+        $composer->install(LockGenerator::WORKDIR);
+        $fileSystem->copyFile('../workdir/composer.lock', 'lock/pim-enterprise-dev/composer.lock')->shouldBeCalled();
+        $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $this->generate('composer', 'akeneo/pim-enterprise-dev');
+    }
 
-                $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
-                $this->generate($type[$i], $repository[$j]);
-            }
-        }
+    function it_generates_lock_yarn_enterprise_dev(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
+    {
+        $fileSystem->createDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $git->clone('pim-enterprise-dev')->shouldBeCalled();
+        $yarn->install(LockGenerator::WORKDIR);
+        $fileSystem->copyFile('../workdir/yarn.lock', 'lock/pim-enterprise-dev/yarn.lock')->shouldBeCalled();
+        $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $this->generate('yarn', 'akeneo/pim-enterprise-dev');
+    }
+
+    function it_generates_lock_all_enterprise_dev(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
+    {
+        $fileSystem->createDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $git->clone('pim-enterprise-dev')->shouldBeCalled();
+        $composer->install(LockGenerator::WORKDIR);
+        $yarn->install(LockGenerator::WORKDIR);
+        $fileSystem->copyFile('../workdir/composer.lock', 'lock/pim-enterprise-dev/composer.lock')->shouldBeCalled();
+        $fileSystem->copyFile('../workdir/yarn.lock', 'lock/pim-enterprise-dev/yarn.lock')->shouldBeCalled();
+        $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
+        $this->generate('all', 'akeneo/pim-enterprise-dev');
     }
 }
