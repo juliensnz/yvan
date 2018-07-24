@@ -12,6 +12,8 @@ use App\Exception\CopyFileException;
 
 class LockGenerator
 {
+    public const WORKDIR = '../workdir';
+
     private $fileSystem;
     private $git;
     private $composer;
@@ -29,10 +31,9 @@ class LockGenerator
     {
         $repositoryName = explode('/', $repository);
 
-        $installationFolder = '../workdir';
         $destinationFolder = sprintf('lock/%s', $repositoryName[1]);
 
-        $this->fileSystem->createDirectory($installationFolder);
+        $this->fileSystem->createDirectory(self::WORKDIR);
 
         try {
             $this->git->clone($repositoryName[1]);
@@ -42,14 +43,14 @@ class LockGenerator
         try {
             switch ($type) {
                 case 'composer':
-                    $this->composer->install($installationFolder);
+                    $this->composer->install(self::WORKDIR);
                     break;
                 case 'yarn':
-                    $this->yarn->install($installationFolder);
+                    $this->yarn->install(self::WORKDIR);
                     break;
                 case 'all':
-                    $this->composer->install($installationFolder);
-                    $this->yarn->install($installationFolder);
+                    $this->composer->install(self::WORKDIR);
+                    $this->yarn->install(self::WORKDIR);
                     break;
             }
         } catch (InstallException $exception) {
@@ -57,19 +58,19 @@ class LockGenerator
 
         try {
             if ($type !== 'all') {
-                $this->fileSystem->copyFile(sprintf('%s/%s.lock', $installationFolder, $type),
+                $this->fileSystem->copyFile(sprintf('%s/%s.lock', self::WORKDIR, $type),
                     sprintf('%s/%s.lock', $destinationFolder, $type));
             } else {
-                $this->fileSystem->copyFile(sprintf('%s/composer.lock', $installationFolder),
+                $this->fileSystem->copyFile(sprintf('%s/composer.lock', self::WORKDIR),
                     sprintf('%s/composer.lock', $destinationFolder));
-                $this->fileSystem->copyFile(sprintf('%s/yarn.lock', $installationFolder),
+                $this->fileSystem->copyFile(sprintf('%s/yarn.lock', self::WORKDIR),
                     sprintf('%s/yarn.lock', $destinationFolder));
             }
             $install = true;
         } catch (CopyFileException $exception) {
             $install = false;
         } finally {
-            $this->fileSystem->removeDirectory($installationFolder);
+            $this->fileSystem->removeDirectory(self::WORKDIR);
         }
 
         if ($install == false) {

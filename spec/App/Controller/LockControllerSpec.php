@@ -6,10 +6,11 @@ use App\Controller\LockController;
 use PhpSpec\ObjectBehavior;
 use App\Generator\LockGenerator;
 use Prophecy\Argument;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class LockControllerSpec extends ObjectBehavior
 {
-
     function let(LockGenerator $lockGenerator)
     {
         $this->beConstructedWith($lockGenerator);
@@ -20,7 +21,8 @@ class LockControllerSpec extends ObjectBehavior
         $this->shouldHaveType(LockController::class);
     }
 
-    function it_locks(LockGenerator $lockGenerator)
+    function it_work(LockGenerator $lockGenerator)
     {
+        //$lockGenerator->generate(Argument::cetera(), Argument::cetera());
     }
 }
