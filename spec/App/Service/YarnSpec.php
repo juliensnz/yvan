@@ -29,6 +29,6 @@ class YarnSpec extends ObjectBehavior
     {
         $cmdInstall = 'cd ../workdir && yarn install';
         $processRunner->runCommand($cmdInstall)->willThrow(new \Exception());
-        $this->shouldThrow('App\Exception\InstallException')->during('install', ["../workdir"]);
+        $this->shouldThrow('App\Exception\InstallException')->during('install', ['../workdir']);
     }
 }

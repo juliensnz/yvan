@@ -33,12 +33,13 @@ class FileSystemSpec extends ObjectBehavior
     function it_copies_file($fileSystem)
     {
         $fileSystem->copy('../workdir/composer.lock', 'lock/pim-community-dev/composer.lock')->shouldBeCAlled();
-        $this->copyFile('../workdir/composer.lock', "lock/pim-community-dev/composer.lock");
+        $this->copyFile('../workdir/composer.lock', 'lock/pim-community-dev/composer.lock');
     }
 
     function it_should_not_throw_an_copy_file_exception($fileSystem)
     {
         $fileSystem->copy('../workdir/composer.lock', 'lock/pim-community-dev/composer.lock')->willThrow(new \Exception());
-        $this->shouldThrow('App\Exception\CopyFileException')->during('copyFile', [['../workdir/composer.lock'],['lock/pim-community-dev/composer.lock']]);
+        $this->shouldThrow('App\Exception\CopyFileException')->during('copyFile',
+            [['../workdir/composer.lock'], ['lock/pim-community-dev/composer.lock']]);
     }
 }

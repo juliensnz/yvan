@@ -29,6 +29,6 @@ class ComposerSpec extends ObjectBehavior
     {
         $cmdInstall = 'cd ../workdir && composer install --no-scripts --no-autoloader --no-progress --no-suggest --ignore-platform-reqs';
         $processRunner->runCommand($cmdInstall)->willThrow(new \Exception());
-        $this->shouldThrow('App\Exception\InstallException')->during('install', ["../workdir"]);
+        $this->shouldThrow('App\Exception\InstallException')->during('install', ['../workdir']);
     }
 }

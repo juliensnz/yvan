@@ -20,15 +20,25 @@ class GitSpec extends ObjectBehavior
 
     function it_clones($processRunner)
     {
-        $processRunner->runCommand(['git','clone','git@github.com:akeneo/pim-community-dev.git','../workdir'])->shouldBeCAlled();
+        $processRunner->runCommand([
+            'git',
+            'clone',
+            'git@github.com:akeneo/pim-community-dev.git',
+            '../workdir',
+        ])->shouldBeCAlled();
 
         $this->clone('pim-community-dev');
     }
 
     function it_should_throw_an_git_clone_exception($processRunner)
     {
-        $processRunner->runCommand(['git','clone','git@github.com:akeneo/pim-community-dev.git','../workdir'])->willThrow(new \Exception());
+        $processRunner->runCommand([
+            'git',
+            'clone',
+            'git@github.com:akeneo/pim-community-dev.git',
+            '../workdir',
+        ])->willThrow(new \Exception());
 
-        $this->shouldThrow('App\Exception\GitCloneException')->during('clone', ["pim-community-dev"]);
+        $this->shouldThrow('App\Exception\GitCloneException')->during('clone', ['pim-community-dev']);
     }
 }
