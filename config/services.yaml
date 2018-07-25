@@ -42,5 +42,20 @@ services:
         arguments:
             - '@Symfony\Component\Filesystem\Filesystem'
 
+    App\Service\Git\:
+        resource: '../src/Service/Git.php'
+        arguments:
+            - '@App\Helper\ProcessRunner'
+
+    App\Service\Composer\:
+        resource: '../src/Service/Composer.php'
+        arguments:
+            - '@App\Helper\ProcessRunner'
+
+    App\Service\Yarn\:
+        resource: '../src/Service/Yarn.php'
+        arguments:
+            - '@App\Helper\ProcessRunner'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

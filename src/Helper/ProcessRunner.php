@@ -10,7 +10,7 @@ class ProcessRunner
     /**
      * Run a terminal command
      */
-    public static function runCommand($command, $timeout = 0.0)
+    public function runCommand($command, $timeout = 0.0)
     {
         $process = new Process($command);
         $process->setTimeout($timeout);
