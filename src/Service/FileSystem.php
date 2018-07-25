@@ -15,14 +15,14 @@ class FileSystem
         $this->fileSystem = $fileSystem;
     }
 
-    public function removeDirectory($sourceFolder)
-    {
-        $this->fileSystem->remove($sourceFolder);
-    }
-
     public function createDirectory($sourceFolder)
     {
         $this->fileSystem->mkdir($sourceFolder);
+    }
+
+    public function removeDirectory($sourceFolder)
+    {
+        $this->fileSystem->remove($sourceFolder);
     }
 
     public function copyFile($sourceFile, $destinationFile)
