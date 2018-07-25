@@ -4,6 +4,7 @@
 /var/
 /vendor/
 /workdir/
+/public/lock/
 ###< symfony/framework-bundle ###
 .idea/
 

@@ -28,5 +28,34 @@ services:
             - '@App\Generator\LockGenerator'
         tags: ['controller.service_arguments']
 
+    App\Generator\:
+        resource: '../src/Generator'
+        arguments:
+            - '@App\Service\FileSystem'
+            - '@App\Service\Git'
+            - '@App\Service\Composer'
+            - '@App\Service\Yarn'
+        tags: ['generator.service_arguments']
+
+    App\Service\:
+        resource: '../src/Service/FileSystem.php'
+        arguments:
+            - '@Symfony\Component\Filesystem\Filesystem'
+
+    App\Service\Git\:
+        resource: '../src/Service/Git.php'
+        arguments:
+            - '@App\Helper\ProcessRunner'
+
+    App\Service\Composer\:
+        resource: '../src/Service/Composer.php'
+        arguments:
+            - '@App\Helper\ProcessRunner'
+
+    App\Service\Yarn\:
+        resource: '../src/Service/Yarn.php'
+        arguments:
+            - '@App\Helper\ProcessRunner'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
