@@ -1,3 +1,7 @@
 app_lock:
-    path: /lock
+    path: /lock/{repository}/{type}
     controller: App\Controller\LockController::lock
+    defaults:
+        repository: "pim-community-dev"
+        type: "composer"
+

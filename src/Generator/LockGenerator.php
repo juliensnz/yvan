@@ -29,14 +29,12 @@ class LockGenerator
 
     public function generate(string $type, string $repository)
     {
-        $repositoryName = explode('/', $repository);
-
-        $destinationFolder = sprintf('lock/%s', $repositoryName[1]);
+        $destinationFolder = sprintf('lock/%s', $repository);
 
         $this->fileSystem->createDirectory(self::WORKDIR);
 
         try {
-            $this->git->clone($repositoryName[1]);
+            $this->git->clone($repository);
         } catch (GitCloneException $exception) {
         }
 

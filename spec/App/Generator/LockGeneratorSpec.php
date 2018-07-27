@@ -28,7 +28,7 @@ class LockGeneratorSpec extends ObjectBehavior
         $composer->install(LockGenerator::WORKDIR);
         $fileSystem->copyFile('../workdir/composer.lock', 'lock/pim-community-dev/composer.lock')->shouldBeCalled();
         $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
-        $this->generate('composer', 'akeneo/pim-community-dev');
+        $this->generate('composer', 'pim-community-dev');
     }
 
     function it_generates_lock_yarn_community_dev(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
@@ -38,7 +38,7 @@ class LockGeneratorSpec extends ObjectBehavior
         $yarn->install(LockGenerator::WORKDIR);
         $fileSystem->copyFile('../workdir/yarn.lock', 'lock/pim-community-dev/yarn.lock')->shouldBeCalled();
         $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
-        $this->generate('yarn', 'akeneo/pim-community-dev');
+        $this->generate('yarn', 'pim-community-dev');
     }
 
     function it_generates_lock_all_community_dev(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
@@ -50,7 +50,7 @@ class LockGeneratorSpec extends ObjectBehavior
         $fileSystem->copyFile('../workdir/composer.lock', 'lock/pim-community-dev/composer.lock')->shouldBeCalled();
         $fileSystem->copyFile('../workdir/yarn.lock', 'lock/pim-community-dev/yarn.lock')->shouldBeCalled();
         $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
-        $this->generate('all', 'akeneo/pim-community-dev');
+        $this->generate('all', 'pim-community-dev');
     }
 
     function it_generates_lock_composer_enterprise_dev(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
@@ -60,7 +60,7 @@ class LockGeneratorSpec extends ObjectBehavior
         $composer->install(LockGenerator::WORKDIR);
         $fileSystem->copyFile('../workdir/composer.lock', 'lock/pim-enterprise-dev/composer.lock')->shouldBeCalled();
         $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
-        $this->generate('composer', 'akeneo/pim-enterprise-dev');
+        $this->generate('composer', 'pim-enterprise-dev');
     }
 
     function it_generates_lock_yarn_enterprise_dev(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
@@ -70,7 +70,7 @@ class LockGeneratorSpec extends ObjectBehavior
         $yarn->install(LockGenerator::WORKDIR);
         $fileSystem->copyFile('../workdir/yarn.lock', 'lock/pim-enterprise-dev/yarn.lock')->shouldBeCalled();
         $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
-        $this->generate('yarn', 'akeneo/pim-enterprise-dev');
+        $this->generate('yarn', 'pim-enterprise-dev');
     }
 
     function it_generates_lock_all_enterprise_dev(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
@@ -82,6 +82,6 @@ class LockGeneratorSpec extends ObjectBehavior
         $fileSystem->copyFile('../workdir/composer.lock', 'lock/pim-enterprise-dev/composer.lock')->shouldBeCalled();
         $fileSystem->copyFile('../workdir/yarn.lock', 'lock/pim-enterprise-dev/yarn.lock')->shouldBeCalled();
         $fileSystem->removeDirectory(LockGenerator::WORKDIR)->shouldBeCalled();
-        $this->generate('all', 'akeneo/pim-enterprise-dev');
+        $this->generate('all', 'pim-enterprise-dev');
     }
 }

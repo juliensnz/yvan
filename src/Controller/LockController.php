@@ -9,13 +9,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @package App\Controller
- * @Route("/lock")
+ * @Route("/lock/{repository}/{type}")
  */
 class LockController
 {
     private $lockGenerator;
     private $allowedTypes = ['composer', 'yarn', 'all'];
-    private $allowedRepository = ['akeneo/pim-community-dev', 'akeneo/pim-enterprise-dev'];
+    private $allowedRepository = ['pim-community-dev', 'pim-enterprise-dev'];
 
     public function __construct(LockGenerator $lockGenerator)
     {
@@ -23,21 +23,13 @@ class LockController
     }
 
     /**
-     * @Route("/lock")
-     *
      * @return JsonResponse
      */
-    public function lock(Request $request)
+    public function lock(Request $request, $repository, $type)
     {
-        $userInput = explode(' ', $request->request->get('text'));
-
-        $type = isset($userInput[0]) && '' !== $userInput[0] ? $userInput[0] : 'composer';
-
         if (!in_array($type, $this->allowedTypes)) {
             throw new \InvalidArgumentException('Type not allowed');
         }
-
-        $repository = isset($userInput[1]) ? $userInput[1] : 'akeneo/pim-community-dev';
 
         if (!in_array($repository, $this->allowedRepository)) {
             throw new \InvalidArgumentException('Repository not allowed');
