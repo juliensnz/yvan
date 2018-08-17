@@ -22,38 +22,34 @@ services:
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
-    App\Controller\:
-        resource: '../src/Controller'
+    App\Controller\LockController:
         arguments:
-            - '@App\Generator\LockGenerator'
+            - '@App\Helper\ProcessRunner'
+            - '%kernel.root_dir%'
         tags: ['controller.service_arguments']
 
-    App\Generator\:
-        resource: '../src/Generator'
+    App\Generator\LockGenerator:
         arguments:
             - '@App\Service\FileSystem'
             - '@App\Service\Git'
             - '@App\Service\Composer'
             - '@App\Service\Yarn'
+            - '%kernel.root_dir%'
         tags: ['generator.service_arguments']
 
-    App\Service\:
-        resource: '../src/Service/FileSystem.php'
+    App\Service\FileSystem:
         arguments:
             - '@Symfony\Component\Filesystem\Filesystem'
 
-    App\Service\Git\:
-        resource: '../src/Service/Git.php'
+    App\Service\Git:
         arguments:
             - '@App\Helper\ProcessRunner'
 
-    App\Service\Composer\:
-        resource: '../src/Service/Composer.php'
+    App\Service\Composer:
         arguments:
             - '@App\Helper\ProcessRunner'
 
-    App\Service\Yarn\:
-        resource: '../src/Service/Yarn.php'
+    App\Service\Yarn:
         arguments:
             - '@App\Helper\ProcessRunner'
 

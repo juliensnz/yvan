@@ -2,79 +2,100 @@
 
 namespace App\Generator;
 
-use App\Service\FileSystem;
-use App\Service\Git;
-use App\Service\Composer;
-use App\Service\Yarn;
+use App\Exception\CopyFileException;
 use App\Exception\GitCloneException;
 use App\Exception\InstallException;
-use App\Exception\CopyFileException;
+use App\Service\Composer;
+use App\Service\FileSystem;
+use App\Service\Git;
+use App\Service\Yarn;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class LockGenerator
 {
-    public const WORKDIR = '../workdir';
-
     private $fileSystem;
     private $git;
     private $composer;
     private $yarn;
 
-    public function __construct(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn)
+    public function __construct(FileSystem $fileSystem, Git $git, Composer $composer, Yarn $yarn, string $rootdir)
     {
         $this->fileSystem = $fileSystem;
         $this->git = $git;
         $this->composer = $composer;
         $this->yarn = $yarn;
+        $this->rootdir = $rootdir;
     }
 
-    public function generate(string $type, string $repository)
+    public function generate(OutputInterface $output, string $type, string $repository)
     {
-        $destinationFolder = sprintf('lock/%s', $repository);
+        $workdir = sprintf('%s/../workdir', $this->rootdir);
+        $destinationFolder = sprintf('%s/../public/lock/%s', $this->rootdir, $repository);
 
-        $this->fileSystem->createDirectory(self::WORKDIR);
+        $this->fileSystem->removeDirectory($workdir);
+        $this->fileSystem->createDirectory($workdir);
 
+        $cloneSection = $output->section();
+        $cloneSection->writeln(sprintf('<info>Clone "%s"</info>', $repository));
         try {
-            $this->git->clone($repository);
+            $this->git->clone($repository, $workdir);
         } catch (GitCloneException $exception) {
-        }
+            $cloneSection->writeln(sprintf('<error>Error while cloning "%s": %s</error>', $repository, $exception->getMessage()));
 
-        try {
-            switch ($type) {
-                case 'composer':
-                    $this->composer->install(self::WORKDIR);
-                    break;
-                case 'yarn':
-                    $this->yarn->install(self::WORKDIR);
-                    break;
-                case 'all':
-                    $this->composer->install(self::WORKDIR);
-                    $this->yarn->install(self::WORKDIR);
-                    break;
+            return;
+        }
+        $cloneSection->overwrite(sprintf('<info>Clone "%s"</info> [done]', $repository));
+
+        $lockSection = $output->section();
+
+        if (in_array($type, ['all', 'yarn'])) {
+            $lockSection->writeln('<info>Generate yarn lock</info>');
+            try {
+                $this->yarn->install($workdir);
+            } catch (InstallException $exception) {
+                $lockSection->writeln(sprintf('<error>Error while genrating yarn lock: %s</error>', $exception->getMessage()));
+
+                return;
             }
-        } catch (InstallException $exception) {
+            $lockSection->overwrite('<info>Generate yarn lock</info> [done]');
         }
 
+        if (in_array($type, ['all', 'composer'])) {
+            $lockSection->writeln('<info>Generate composer lock</info>');
+            try {
+                $this->composer->install($workdir);
+            } catch (InstallException $exception) {
+                $lockSection->writeln(sprintf('<error>Error while genrating composer lock: %s</error>', $exception->getMessage()));
+
+                return;
+            }
+            $lockSection->overwrite('<info>Generate composer lock</info> [done]');
+        }
+
+        $moveSection = $output->section();
+        $moveSection->writeln('<info>Copy lock file(s) in public folder</info>');
         try {
             if ($type !== 'all') {
-                $this->fileSystem->copyFile(sprintf('%s/%s.lock', self::WORKDIR, $type),
-                    sprintf('%s/%s.lock', $destinationFolder, $type));
+                $this->fileSystem->copyFile(
+                    sprintf('%s/%s.lock', $workdir, $type),
+                    sprintf('%s/%s.lock', $destinationFolder, $type)
+                );
             } else {
-                $this->fileSystem->copyFile(sprintf('%s/composer.lock', self::WORKDIR),
-                    sprintf('%s/composer.lock', $destinationFolder));
-                $this->fileSystem->copyFile(sprintf('%s/yarn.lock', self::WORKDIR),
-                    sprintf('%s/yarn.lock', $destinationFolder));
+                $this->fileSystem->copyFile(
+                    sprintf('%s/composer.lock', $workdir),
+                    sprintf('%s/composer.lock', $destinationFolder)
+                );
+                $this->fileSystem->copyFile(
+                    sprintf('%s/yarn.lock', $workdir),
+                    sprintf('%s/yarn.lock', $destinationFolder)
+                );
             }
             $install = true;
         } catch (CopyFileException $exception) {
-            $install = false;
-        } finally {
-            $this->fileSystem->removeDirectory(self::WORKDIR);
-        }
+            $moveSection->writeln(sprintf('<error>Error while moving lock file to public folder: %s</error>', $exception->getMessage()));
 
-        if ($install == false) {
-            return 'The operation is unsuccessful';
-        } else {
-            return 'The operation is successful';
+            return;
         }
+        $moveSection->overwrite('<info>Copy lock file(s) in public folder</info> [done]');
     }
 }

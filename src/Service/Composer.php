@@ -22,7 +22,7 @@ class Composer
         try {
             $this->processRunner->runCommand($cmdInstall);
         } catch (\Exception $exception) {
-            throw new InstallException();
+            throw new InstallException($exception->getMessage());
         }
     }
 }

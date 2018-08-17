@@ -15,14 +15,14 @@ class Git
         $this->processRunner = $processRunner;
     }
 
-    public function clone($repository)
+    public function clone(string $repository, string $destination)
     {
         $repository = sprintf('git@github.com:akeneo/%s.git', $repository);
 
         try {
-            $this->processRunner->runCommand(array('git', 'clone', $repository, '../workdir'));
+            $this->processRunner->runCommand(['git', 'clone', '--depth=50', '--branch=master', $repository, $destination]);
         } catch (\Exception $exception) {
-            throw new GitCloneException();
+            throw new GitCloneException($exception->getMessage());
         }
     }
 }

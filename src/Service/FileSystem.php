@@ -28,10 +28,13 @@ class FileSystem
     public function copyFile($sourceFile, $destinationFile)
     {
         try {
-            $this->fileSystem->copy(sprintf('%s', $sourceFile),
-                sprintf('%s', $destinationFile));
+            $this->fileSystem->copy(
+                sprintf('%s', $sourceFile),
+                sprintf('%s', $destinationFile),
+                true
+            );
         } catch (\Exception $exception) {
-            throw new CopyFileException();
+            throw new CopyFileException($exception->getMessage());
         }
     }
 }

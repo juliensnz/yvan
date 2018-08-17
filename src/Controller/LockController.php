@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
-use App\Generator\LockGenerator;
+use App\Helper\ProcessRunner;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -13,30 +15,41 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class LockController
 {
-    private $lockGenerator;
-    private $allowedTypes = ['composer', 'yarn', 'all'];
-    private $allowedRepository = ['pim-community-dev', 'pim-enterprise-dev'];
+    private $processRunner;
+    private $rootdir;
 
-    public function __construct(LockGenerator $lockGenerator)
+    const DEFAULT_TYPE = 'all';
+    const ALLOWED_TYPES = ['composer', 'yarn', 'all'];
+    const DEFAULT_REPOSITORY = 'pim-enterprise-dev';
+    const ALLOWED_REPOSITORIES = ['pim-community-dev', 'pim-enterprise-dev'];
+
+    public function __construct(ProcessRunner $processRunner, string $rootdir)
     {
-        $this->lockGenerator = $lockGenerator;
+        $this->processRunner = $processRunner;
+        $this->rootdir = $rootdir;
     }
 
     /**
      * @return JsonResponse
      */
-    public function lock(Request $request, $repository, $type)
+    public function lock(Request $request)
     {
-        if (!in_array($type, $this->allowedTypes)) {
-            throw new \InvalidArgumentException('Type not allowed');
+        $userInput = $request->request->get('text');
+
+        $parameters = explode(' ', $userInput);
+        $type = isset($parameters[0]) && !empty($parameters[0]) ? $parameters[0] : self::DEFAULT_TYPE;
+        $repository = $parameters[1] ?? self::DEFAULT_REPOSITORY;
+
+        if (!in_array($type, self::ALLOWED_TYPES)) {
+            throw new \InvalidArgumentException(sprintf('Type "%s" not allowed (allowed types: %s)', $type, implode(', ', self::ALLOWED_TYPES)));
         }
 
-        if (!in_array($repository, $this->allowedRepository)) {
-            throw new \InvalidArgumentException('Repository not allowed');
+        if (!in_array($repository, self::ALLOWED_REPOSITORIES)) {
+            throw new \InvalidArgumentException(sprintf('Repository "%s" not allowed (allowed repositories: %s)', $repository, implode(', ', self::ALLOWED_REPOSITORIES)));
         }
 
-        $response = $this->lockGenerator->generate($type, $repository);
+        echo $this->processRunner->runAsyncCommand(sprintf('%s/../bin/console --env=prod app:generate-lock %s %s', $this->rootdir, $type, $repository));
 
-        return new JsonResponse($response);
+        return new JsonResponse();
     }
 }
