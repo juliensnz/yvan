@@ -34,21 +34,22 @@ class LockController
      */
     public function lock(Request $request)
     {
-        $userInput = $request->request->get('text');
+        file_put_contents('/tmp/result.json', $request->getContent());
+        // $userInput = $request->request->get('text');
 
-        $parameters = explode(' ', $userInput);
-        $type = isset($parameters[0]) && !empty($parameters[0]) ? $parameters[0] : self::DEFAULT_TYPE;
-        $repository = $parameters[1] ?? self::DEFAULT_REPOSITORY;
+        // $parameters = explode(' ', $userInput);
+        // $type = isset($parameters[0]) && !empty($parameters[0]) ? $parameters[0] : self::DEFAULT_TYPE;
+        // $repository = $parameters[1] ?? self::DEFAULT_REPOSITORY;
 
-        if (!in_array($type, self::ALLOWED_TYPES)) {
-            throw new \InvalidArgumentException(sprintf('Type "%s" not allowed (allowed types: %s)', $type, implode(', ', self::ALLOWED_TYPES)));
-        }
+        // if (!in_array($type, self::ALLOWED_TYPES)) {
+        //     throw new \InvalidArgumentException(sprintf('Type "%s" not allowed (allowed types: %s)', $type, implode(', ', self::ALLOWED_TYPES)));
+        // }
 
-        if (!in_array($repository, self::ALLOWED_REPOSITORIES)) {
-            throw new \InvalidArgumentException(sprintf('Repository "%s" not allowed (allowed repositories: %s)', $repository, implode(', ', self::ALLOWED_REPOSITORIES)));
-        }
+        // if (!in_array($repository, self::ALLOWED_REPOSITORIES)) {
+        //     throw new \InvalidArgumentException(sprintf('Repository "%s" not allowed (allowed repositories: %s)', $repository, implode(', ', self::ALLOWED_REPOSITORIES)));
+        // }
 
-        echo $this->processRunner->runAsyncCommand(sprintf('%s/../bin/console --env=prod app:generate-lock %s %s', $this->rootdir, $type, $repository));
+        // echo $this->processRunner->runAsyncCommand(sprintf('%s/../bin/console --env=prod app:generate-lock %s %s', $this->rootdir, $type, $repository));
 
         return new JsonResponse();
     }
